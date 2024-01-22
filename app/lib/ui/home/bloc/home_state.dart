@@ -12,5 +12,7 @@ class HomeState extends BaseBlocState with _$HomeState {
     @Default(LoadMoreOutput<User>(data: <User>[])) LoadMoreOutput<User> users,
     @Default(false) bool isShimmerLoading,
     AppException? loadUsersException,
+
+    @Default([]) List<RecordLine> records,
   }) = _HomeState;
 }

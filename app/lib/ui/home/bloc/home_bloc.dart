@@ -24,6 +24,11 @@ class HomeBloc extends BaseBloc<HomeEvent, HomeState> {
       _onHomePageRefreshed,
       transformer: log(),
     );
+
+    on<AddRecordLine>(
+      _addRecordLine,
+      transformer: log(),
+    );
   }
   final GetUsersUseCase _getUsersUseCase;
 
@@ -34,6 +39,17 @@ class HomeBloc extends BaseBloc<HomeEvent, HomeState> {
       doOnSubscribe: () async => emit(state.copyWith(isShimmerLoading: true)),
       doOnSuccessOrError: () async => emit(state.copyWith(isShimmerLoading: false)),
     );
+  }
+
+  FutureOr<void> _addRecordLine(AddRecordLine event, Emitter<HomeState> emit) async {
+    // print(event.recordLine);
+    final line = event.recordLine.copyWith(
+      index: state.records.length,
+    );
+    emit(state.copyWith(
+      records: [...state.records,line],
+    ));
+    // print(state.records.length);
   }
 
   FutureOr<void> _onUserLoadMore(UserLoadMore event, Emitter<HomeState> emit) async {

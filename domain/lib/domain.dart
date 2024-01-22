@@ -8,6 +8,7 @@ export 'src/entity/base/paged_list.dart';
 export 'src/entity/base/process_state.dart';
 export 'src/entity/enum/enum.dart';
 export 'src/entity/image_url.dart';
+export 'src/entity/record_line.dart';
 export 'src/entity/token.dart';
 export 'src/entity/user.dart';
 export 'src/navigation/app_navigator.dart';

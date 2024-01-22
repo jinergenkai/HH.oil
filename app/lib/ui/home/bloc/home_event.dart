@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:domain/domain.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../base/bloc/base_bloc_event.dart';
@@ -25,4 +26,11 @@ class HomePageRefreshed extends HomeEvent with _$HomePageRefreshed {
 @freezed
 class UserLoadMore extends HomeEvent with _$UserLoadMore {
   const factory UserLoadMore() = _UserLoadMore;
+}
+
+@freezed
+class AddRecordLine extends HomeEvent with _$AddRecordLine {
+  const factory AddRecordLine({
+    required RecordLine recordLine,
+  }) = _AddRecordLine;
 }

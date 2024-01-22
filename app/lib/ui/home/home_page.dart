@@ -31,147 +31,170 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
   @override
   Widget buildPage(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    final contentController = TextEditingController();
-    final moneyController = TextEditingController();
+    final contentController = TextEditingController(text: "content");
+    final moneyController = TextEditingController(text: "-123");
 
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 0,
-      child: CommonScaffold(
-        //* appbar
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(DateTime.now().toStringWithFormat('dd/MM/yyyy'), style: AppTextStyles.s20w600Primary()),
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            padding: EdgeInsets.zero,
-            icon: Icon(Icons.arrow_left_rounded, size: Dimens.d50.responsive(), color: AppColors.current.primaryColor),
-            onPressed: () {
-              navigator.push(const AppRouteInfo.itemDetail(User(id: 1)));
-            },
-          ),
-          actions: [
-            IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(Icons.arrow_right_rounded, size: Dimens.d50.responsive(), color: AppColors.current.primaryColor),
-              onPressed: () {
-                navigator.push(const AppRouteInfo.itemDetail(User(id: 1)));
-              },
+    return BlocConsumer<HomeBloc, HomeState>(
+      listenWhen: (previous, current) => previous.records != current.records,
+      buildWhen: (previous, current) => previous.records != current.records,
+      listener: (context, state) {},
+      builder: (context, state) {
+        return DefaultTabController(
+          length: 2,
+          initialIndex: 0,
+          child: CommonScaffold(
+            //* appbar
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text(DateTime.now().toStringWithFormat('dd/MM/yyyy'), style: AppTextStyles.s20w600Primary()),
+              backgroundColor: Colors.white,
+              leading: IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.arrow_left_rounded, size: Dimens.d50.responsive(), color: AppColors.current.primaryColor),
+                onPressed: () {
+                  navigator.push(const AppRouteInfo.itemDetail(User(id: 1)));
+                },
+              ),
+              actions: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.arrow_right_rounded, size: Dimens.d50.responsive(), color: AppColors.current.primaryColor),
+                  onPressed: () {
+                    navigator.push(const AppRouteInfo.itemDetail(User(id: 1)));
+                  },
+                ),
+              ],
+              //* tabbar
+              bottom: TabBar(
+                indicatorColor: AppColors.current.primaryColor,
+                tabs: <Widget>[
+                  Tab(
+                      child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [Icon(Icons.view_list_sharp, color: AppColors.current.primaryColor), const SizedBox(width: 8), Text('Ghi Chép', style: AppTextStyles.s20w600Primary())],
+                  )),
+                  Tab(
+                      child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [Icon(Icons.domain_verification_rounded, color: AppColors.current.primaryColor), const SizedBox(width: 8), Text('Chốt Sổ', style: AppTextStyles.s20w600Primary())],
+                  )),
+                ],
+              ),
             ),
-          ],
-          //* tabbar
-          bottom: TabBar(
-            indicatorColor: AppColors.current.primaryColor,
-            tabs: <Widget>[
-              Tab(
-                  child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [Icon(Icons.view_list_sharp, color: AppColors.current.primaryColor), const SizedBox(width: 8), Text('Ghi Chép', style: AppTextStyles.s20w600Primary())],
-              )),
-              Tab(
-                  child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [Icon(Icons.domain_verification_rounded, color: AppColors.current.primaryColor), const SizedBox(width: 8), Text('Chốt Sổ', style: AppTextStyles.s20w600Primary())],
-              )),
-            ],
-          ),
-        ),
-        //* tabarview
-        body: TabBarView(
-          children: <Widget>[
-            //* ghi chép
-            SafeArea(
-                child: SingleChildScrollView(
-              child: DataTable(
-                  horizontalMargin: 0,
-                  columnSpacing: 0,
-                  showCheckboxColumn: false,
-                  border: TableBorder.all(color: AppColors.current.primaryColor.withOpacity(0.3), width: 2),
-                  // columns: [{'', 2}, 'Nội dung', 'Tiền', ''].map((e) => HeaderDataColumn(e)).toList(),
-                  columns: [
-                    ['Nội dung', .6],
-                    ['Tổng: 21.500k', .4],
-                  ].map((e) => HeaderDataColumn(e, width)).toList(),
-                  rows: [
-                    ...List.generate(
-                      20,
-                      (index) => DataRow(
-                        color: MaterialStateProperty.resolveWith<Color>((states) => index.isEven ? AppColors.current.primaryColor.withOpacity(0.1) : Colors.white),
-                        onSelectChanged: (value) => navigator.push(const AppRouteInfo.itemDetail(User(id: 1))),
-                        cells: [
-                          //* Row Nội dung
-                          DataCell(
-                            Container(
-                                padding: EdgeInsets.all(Dimens.d8.responsive()),
-                                child: Text(
-                                  '${index + 1}',
-                                  style: AppTextStyles.s14w600Primary(),
-                                )),
-                            onTap: () {
-                              //pop up
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text('Xóa ghi chép'),
-                                      content: Text('Bạn có chắc chắn muốn xóa ghi chép này?'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => Navigator.of(context).pop(),
-                                          child: Text('Hủy'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () => Navigator.of(context).pop(),
-                                          child: Text('Xóa'),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            },
+            //* tabarview
+            body: TabBarView(
+              children: <Widget>[
+                //* ghi chép
+                Scaffold(
+                  body: SafeArea(
+                      child: SingleChildScrollView(
+                    child: DataTable(
+                        horizontalMargin: 0,
+                        columnSpacing: 0,
+                        showCheckboxColumn: false,
+                        border: TableBorder.all(color: AppColors.current.primaryColor.withOpacity(0.3), width: 2),
+                        // columns: [{'', 2}, 'Nội dung', 'Tiền', ''].map((e) => HeaderDataColumn(e)).toList(),
+                        //*columns
+                        columns: [
+                          ['Nội dung', .6],
+                          ['Tổng: 21.500k', .4],
+                        ].map((e) => HeaderDataColumn(e, width)).toList(),
+                        //*rows
+                        rows: [
+                          ...state.records.map(
+                            (item) => DataRow(
+                              color: MaterialStateProperty.resolveWith<Color>((states) => item.index.isEven ? AppColors.current.primaryColor.withOpacity(0.1) : Colors.white),
+                              onSelectChanged: (value) => navigator.push(const AppRouteInfo.itemDetail(User(id: 1))),
+                              cells: [
+                                //* Row Nội dung
+                                DataCell(
+                                  Container(
+                                      padding: EdgeInsets.all(Dimens.d8.responsive()),
+                                      child: Text(
+                                        '${item.index + 1}. ${item.content}',
+                                        style: AppTextStyles.s14w600Primary(),
+                                      )),
+                                  onTap: () {
+                                    //pop up
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Xóa ghi chép'),
+                                            content: Text('Bạn có chắc chắn muốn xóa ghi chép này?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: Text('Hủy'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: Text('Xóa'),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                ),
+                                //* Row Tiền Tổng
+                                DataCell(
+                                  Container(
+                                      padding: EdgeInsets.all(Dimens.d8.responsive()),
+                                      child: Text(
+                                        '${item.money.toString()}',
+                                        style: AppTextStyles.s14w600Primary(),
+                                      )),
+                                  showEditIcon: true,
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return GhiChepDialog(
+                                            contentController: contentController,
+                                            moneyController: moneyController,
+                                            // data: state.records[item.index],
+                                          );
+                                        });
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                          //* Row Tiền Tổng
-                          DataCell(
-                            Container(
-                                padding: EdgeInsets.all(Dimens.d8.responsive()),
-                                child: Text(
-                                  '${index + 1}',
-                                  style: AppTextStyles.s14w600Primary(),
-                                )),
-                            showEditIcon: true,
-                            onTap: () {
-                              // edit cell
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return GhiChepDialog(
-                                      contentController: contentController,
-                                      moneyController: moneyController,
-                                    );
-                                  });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ]),
-            )),
-            //* Chốt sổ
-            const Center(
-              child: Text("It's rainy here"),
+                        ]),
+                  )),
+                  //* floating button add ghi chép
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () async {
+                      final data = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) => GhiChepDialog(
+                          contentController: contentController..text = "sad",
+                          moneyController: moneyController,
+                          // data: data,
+                        ),
+                      );
+                      // print((data as RecordLine).content);
+                      if (data != null) {
+                        bloc.add(AddRecordLine(recordLine: data));
+                      }
+                    },
+                    child: const Icon(Icons.add),
+                    backgroundColor: AppColors.current.primaryColor,
+                  ),
+                ),
+                //* Chốt sổ
+                const Center(
+                  child: Text("It's rainy here"),
+                ),
+              ],
             ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            navigator.push(const AppRouteInfo.itemDetail(User(id: 1)));
-          },
-          child: const Icon(Icons.add),
-          backgroundColor: AppColors.current.primaryColor,
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
+//* header data column
   DataColumn HeaderDataColumn(List<dynamic> ob, width) => DataColumn(
           label: Expanded(
         child: Container(width: width * ob[1], child: Text(ob[0], style: AppTextStyles.s14w600Primary(), textAlign: TextAlign.center)),
@@ -184,15 +207,22 @@ class GhiChepDialog extends StatelessWidget {
     super.key,
     required this.contentController,
     required this.moneyController,
+    // required this.data,
+    this.isEdit = false,
   });
 
   final TextEditingController contentController;
   final TextEditingController moneyController;
+  final bool isEdit;
+  // final RecordLine data;
 
   @override
   Widget build(BuildContext context) {
+    // contentController.text = data.content;
+    // moneyController.text = data.money.toString();
+
     return AlertDialog(
-      title: Text('Sửa ghi chép', style: AppTextStyles.s20w600Primary()),
+      title: Text((isEdit) ? 'Sửa dòng ghi chép' : 'Tạo dòng ghi chép', style: AppTextStyles.s20w600Primary()),
       content: IntrinsicHeight(
         child: Column(
           children: [
@@ -215,22 +245,35 @@ class GhiChepDialog extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
               style: AppTextStyles.s16w500Primary(),
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.numberWithOptions(signed: true),
               controller: moneyController,
+              // onChanged: ,
               // onTapOutside: (e) {},
-              onEditingComplete: () {},
+              // onEditingComplete: () {},
             ),
           ],
         ),
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            // contentController.clear();
+            // moneyController.clear();
+            Navigator.of(context).pop();
+          },
           child: Text('Hủy'),
         ),
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text('Sửa'),
+          onPressed: () {
+            final dataReturn = RecordLine(
+              content: contentController.text,
+              money: BigDecimal.parse(moneyController.text),
+            );
+            Navigator.of(context).pop(dataReturn);
+            // contentController.clear();
+            // moneyController.clear();
+          },
+          child: Text(isEdit ? 'Sửa' : 'Tạo'),
         ),
       ],
     );
