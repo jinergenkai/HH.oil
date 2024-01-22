@@ -33,7 +33,7 @@ class AppTextField extends StatelessWidget {
             style: AppTextStyles.s14w400Secondary(),
           ),
         ),
-        SizedBox(height: Dimens.d8.responsive()),
+        // SizedBox(height: Dimens.d8.responsive()),
         TextField(
           onTap: onTap,
           onChanged: onChanged,

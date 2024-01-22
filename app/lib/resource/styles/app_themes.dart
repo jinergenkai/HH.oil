@@ -4,6 +4,7 @@ import '../../app.dart';
 
 /// define custom themes here
 final lightTheme = ThemeData(
+  fontFamily: 'Montserrat',
   brightness: Brightness.light,
   splashColor: Colors.transparent,
 )..addAppColor(
@@ -12,6 +13,7 @@ final lightTheme = ThemeData(
   );
 
 final darkTheme = ThemeData(
+  fontFamily: 'Montserrat',
   brightness: Brightness.dark,
   splashColor: Colors.transparent,
 )..addAppColor(

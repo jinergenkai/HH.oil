@@ -26,6 +26,16 @@ class AppTextStyles {
         color: AppColors.current.primaryTextColor,
       ));
 
+  static TextStyle s14w600Primary({
+    double? tablet,
+    double? ultraTablet,
+  }) =>
+      _baseTextStyle.merge(TextStyle(
+        fontSize: Dimens.d14.responsive(tablet: tablet, ultraTablet: ultraTablet),
+        fontWeight: FontWeight.w600,
+        color: AppColors.current.primaryTextColor,
+      ));
+
   static TextStyle s14w400Secondary({
     double? tablet,
     double? ultraTablet,
@@ -35,4 +45,25 @@ class AppTextStyles {
         fontWeight: FontWeight.w400,
         color: AppColors.current.secondaryTextColor,
       ));
+    
+    static TextStyle s16w500Primary({
+    double? tablet,
+    double? ultraTablet,
+  }) =>
+      _baseTextStyle.merge(TextStyle(
+        fontSize: Dimens.d16.responsive(tablet: tablet, ultraTablet: ultraTablet),
+        fontWeight: FontWeight.w500,
+        color: AppColors.current.primaryColor,
+      ));
+  
+      static TextStyle s20w600Primary({
+    double? tablet,
+    double? ultraTablet,
+  }) =>
+      _baseTextStyle.merge(TextStyle(
+        fontSize: Dimens.d20.responsive(tablet: tablet, ultraTablet: ultraTablet),
+        fontWeight: FontWeight.w600,
+        color: AppColors.current.primaryTextColor,
+      ));
+  
 }

@@ -34,10 +34,10 @@ class _MainPageState extends BasePageState<MainPage, MainBloc> {
             }
             tabsRouter.setActiveIndex(index);
           },
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          // unselectedItemColor: AppColors.current.primaryColor,
-          // selectedItemColor: AppColors.current.primaryColor,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          unselectedItemColor: AppColors.current.primaryColor.withOpacity(0.2),
+          selectedItemColor: AppColors.current.primaryColor,
           type: BottomNavigationBarType.fixed,
           // backgroundColor: AppColors.current.primaryColor,
           items: BottomTab.values

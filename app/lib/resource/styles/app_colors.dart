@@ -23,10 +23,10 @@ class AppColors {
   final LinearGradient primaryGradient;
 
   static const defaultAppColor = AppColors(
-    primaryColor: Color.fromARGB(255, 166, 168, 254),
-    secondaryColor: Color.fromARGB(255, 62, 62, 70),
-    primaryTextColor: Color.fromARGB(255, 62, 62, 70),
-    secondaryTextColor: Color.fromARGB(255, 166, 168, 254),
+    primaryColor: Color(0xFF173762),
+    secondaryColor: Colors.white,
+    primaryTextColor: Color(0xFF173762),
+    secondaryTextColor: Color(0xFF173762),
     primaryGradient: LinearGradient(colors: [Color(0xFFFFFFFF), Color(0xFFFE6C30)]),
   );
 
