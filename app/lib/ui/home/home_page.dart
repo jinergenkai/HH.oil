@@ -31,8 +31,6 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
   @override
   Widget buildPage(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    final contentController = TextEditingController(text: "content");
-    final moneyController = TextEditingController(text: "-123");
 
     return BlocConsumer<HomeBloc, HomeState>(
       listenWhen: (previous, current) => previous.records != current.records,
@@ -97,7 +95,7 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                         //*columns
                         columns: [
                           ['Nội dung', .6],
-                          ['Tổng: 21.500k', .4],
+                          ['Tổng: ${state.records.fold(BigDecimal.zero, (previousValue, element) => previousValue + element.money)}', .4],
                         ].map((e) => HeaderDataColumn(e, width)).toList(),
                         //*rows
                         rows: [
@@ -119,19 +117,9 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text('Xóa ghi chép'),
-                                            content: Text('Bạn có chắc chắn muốn xóa ghi chép này?'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.of(context).pop(),
-                                                child: Text('Hủy'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () => Navigator.of(context).pop(),
-                                                child: Text('Xóa'),
-                                              ),
-                                            ],
+                                          return CommonDialogRecordLine(
+                                            data: state.records[item.index],
+                                            isEdit: true,
                                           );
                                         });
                                   },
@@ -149,10 +137,9 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return GhiChepDialog(
-                                            contentController: contentController,
-                                            moneyController: moneyController,
-                                            // data: state.records[item.index],
+                                          return CommonDialogRecordLine(
+                                            data: state.records[item.index],
+                                            isEdit: true,
                                           );
                                         });
                                   },
@@ -167,11 +154,7 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                     onPressed: () async {
                       final data = await showDialog(
                         context: context,
-                        builder: (BuildContext context) => GhiChepDialog(
-                          contentController: contentController..text = "sad",
-                          moneyController: moneyController,
-                          // data: data,
-                        ),
+                        builder: (BuildContext context) => CommonDialogRecordLine(),
                       );
                       // print((data as RecordLine).content);
                       if (data != null) {
@@ -199,83 +182,4 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
           label: Expanded(
         child: Container(width: width * ob[1], child: Text(ob[0], style: AppTextStyles.s14w600Primary(), textAlign: TextAlign.center)),
       ));
-}
-
-//* ghi chep dialog
-class GhiChepDialog extends StatelessWidget {
-  const GhiChepDialog({
-    super.key,
-    required this.contentController,
-    required this.moneyController,
-    // required this.data,
-    this.isEdit = false,
-  });
-
-  final TextEditingController contentController;
-  final TextEditingController moneyController;
-  final bool isEdit;
-  // final RecordLine data;
-
-  @override
-  Widget build(BuildContext context) {
-    // contentController.text = data.content;
-    // moneyController.text = data.money.toString();
-
-    return AlertDialog(
-      title: Text((isEdit) ? 'Sửa dòng ghi chép' : 'Tạo dòng ghi chép', style: AppTextStyles.s20w600Primary()),
-      content: IntrinsicHeight(
-        child: Column(
-          children: [
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Nội dung',
-                labelStyle: AppTextStyles.s16w500Primary(),
-                border: OutlineInputBorder(),
-              ),
-              style: AppTextStyles.s16w500Primary(),
-              controller: contentController,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Tiền',
-                labelStyle: AppTextStyles.s16w500Primary(),
-                border: OutlineInputBorder(),
-              ),
-              style: AppTextStyles.s16w500Primary(),
-              keyboardType: TextInputType.numberWithOptions(signed: true),
-              controller: moneyController,
-              // onChanged: ,
-              // onTapOutside: (e) {},
-              // onEditingComplete: () {},
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            // contentController.clear();
-            // moneyController.clear();
-            Navigator.of(context).pop();
-          },
-          child: Text('Hủy'),
-        ),
-        TextButton(
-          onPressed: () {
-            final dataReturn = RecordLine(
-              content: contentController.text,
-              money: BigDecimal.parse(moneyController.text),
-            );
-            Navigator.of(context).pop(dataReturn);
-            // contentController.clear();
-            // moneyController.clear();
-          },
-          child: Text(isEdit ? 'Sửa' : 'Tạo'),
-        ),
-      ],
-    );
-  }
 }
