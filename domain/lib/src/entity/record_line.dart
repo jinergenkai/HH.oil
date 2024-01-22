@@ -9,7 +9,9 @@ class RecordLine with _$RecordLine {
     @Default(0) int id,
     @Default(0) int index,
     @Default('') String content,
-    // @Default(DateTime) String createdAt,
-    @Default(BigDecimal.zero) BigDecimal money,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    @Default(0) num money,
+    @Default(1) num sign,
   }) = _RecordLine;
 }

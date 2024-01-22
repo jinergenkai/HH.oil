@@ -34,3 +34,17 @@ class AddRecordLine extends HomeEvent with _$AddRecordLine {
     required RecordLine recordLine,
   }) = _AddRecordLine;
 }
+
+@freezed
+class UpdateRecordLine extends HomeEvent with _$UpdateRecordLine {
+  const factory UpdateRecordLine({
+    required RecordLine recordLine,
+  }) = _UpdateRecordLine;
+}
+
+@freezed
+class DeleteRecordLine extends HomeEvent with _$DeleteRecordLine {
+  const factory DeleteRecordLine({
+    required RecordLine recordLine,
+  }) = _DeleteRecordLine;
+}

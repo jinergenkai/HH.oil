@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared/shared.dart';
 
 import '../../app.dart';
-import '../../common_view/blur_border_container.dart';
 import 'bloc/home.dart';
 
 @RoutePage()
@@ -90,59 +89,105 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                         horizontalMargin: 0,
                         columnSpacing: 0,
                         showCheckboxColumn: false,
+                        // dataRowMinHeight: 50,
+                        dataRowMaxHeight: double.infinity, // For dynamic row content height.
                         border: TableBorder.all(color: AppColors.current.primaryColor.withOpacity(0.3), width: 2),
                         // columns: [{'', 2}, 'Nội dung', 'Tiền', ''].map((e) => HeaderDataColumn(e)).toList(),
                         //*columns
                         columns: [
                           ['Nội dung', .6],
-                          ['Tổng: ${state.records.fold(BigDecimal.zero, (previousValue, element) => previousValue + element.money)}', .4],
+                          [
+                            'Tổng: ' +
+                                NumberFormatUtils.formatNumber(
+                                  state.records.fold(0, (num previousValue, element) => previousValue + element.sign * element.money).toInt(),
+                                ) +
+                                ' kđ',
+                            .4
+                          ],
                         ].map((e) => HeaderDataColumn(e, width)).toList(),
                         //*rows
                         rows: [
                           ...state.records.map(
                             (item) => DataRow(
                               color: MaterialStateProperty.resolveWith<Color>((states) => item.index.isEven ? AppColors.current.primaryColor.withOpacity(0.1) : Colors.white),
-                              onSelectChanged: (value) => navigator.push(const AppRouteInfo.itemDetail(User(id: 1))),
+                              onSelectChanged: (onPress) async {
+                                final data = await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return CommonDialogRecordLine(
+                                        data: state.records[item.index],
+                                        isEdit: true,
+                                      );
+                                    });
+                                print(data);
+                                if (data != null) {
+                                  if (data is bool && data == true) {
+                                    bloc.add(DeleteRecordLine(recordLine: item));
+                                  } else if (data is RecordLine) {
+                                    bloc.add(UpdateRecordLine(recordLine: data));
+                                  }
+                                }
+                              },
                               cells: [
                                 //* Row Nội dung
                                 DataCell(
                                   Container(
-                                      padding: EdgeInsets.all(Dimens.d8.responsive()),
+                                      width: width * .6,
+                                      padding: EdgeInsets.all(Dimens.d16.responsive()),
                                       child: Text(
                                         '${item.index + 1}. ${item.content}',
                                         style: AppTextStyles.s14w600Primary(),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
                                       )),
-                                  onTap: () {
-                                    //pop up
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return CommonDialogRecordLine(
-                                            data: state.records[item.index],
-                                            isEdit: true,
-                                          );
-                                        });
-                                  },
+                                  // onTap: () async {
+                                  //   final data = await showDialog(
+                                  //       context: context,
+                                  //       builder: (BuildContext context) {
+                                  //         return CommonDialogRecordLine(
+                                  //           data: state.records[item.index],
+                                  //           isEdit: true,
+                                  //         );
+                                  //       });
+                                  //   if (data != null) {
+                                  //     bloc.add(UpdateRecordLine(recordLine: data));
+                                  //   }
+                                  // },
                                 ),
                                 //* Row Tiền Tổng
                                 DataCell(
                                   Container(
-                                      padding: EdgeInsets.all(Dimens.d8.responsive()),
-                                      child: Text(
-                                        '${item.money.toString()}',
-                                        style: AppTextStyles.s14w600Primary(),
+                                      padding: EdgeInsets.all(Dimens.d16.responsive()),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            item.sign == 1 ? '+' : '-',
+                                            style: AppTextStyles.s14w600Primary(),
+                                            textAlign: TextAlign.right,
+                                          ),
+                                          Text(
+                                            '${NumberFormatUtils.formatNumber(item.money.toInt())} kđ',
+                                            style: AppTextStyles.s14w600Primary(),
+                                            textAlign: TextAlign.right,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
                                       )),
-                                  showEditIcon: true,
-                                  onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return CommonDialogRecordLine(
-                                            data: state.records[item.index],
-                                            isEdit: true,
-                                          );
-                                        });
-                                  },
+                                  // showEditIcon: false,
+                                  // onTap: () async {
+                                  //   final data = await showDialog(
+                                  //       context: context,
+                                  //       builder: (BuildContext context) {
+                                  //         return CommonDialogRecordLine(
+                                  //           data: state.records[item.index],
+                                  //           isEdit: true,
+                                  //         );
+                                  //       });
+                                  //   if (data != null) {
+                                  //     bloc.add(UpdateRecordLine(recordLine: data));
+                                  //   }
+                                  // },
                                 ),
                               ],
                             ),
@@ -156,13 +201,13 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                         context: context,
                         builder: (BuildContext context) => CommonDialogRecordLine(),
                       );
-                      // print((data as RecordLine).content);
+                      // print((data as RecordLine));
                       if (data != null) {
                         bloc.add(AddRecordLine(recordLine: data));
                       }
                     },
-                    child: const Icon(Icons.add),
                     backgroundColor: AppColors.current.primaryColor,
+                    child: const Icon(Icons.add),
                   ),
                 ),
                 //* Chốt sổ

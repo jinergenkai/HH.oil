@@ -29,6 +29,16 @@ class HomeBloc extends BaseBloc<HomeEvent, HomeState> {
       _addRecordLine,
       transformer: log(),
     );
+
+    on<UpdateRecordLine>(
+      _updateRecordLine,
+      transformer: log(),
+    );
+
+    on<DeleteRecordLine>(
+      _deleteRecordLine,
+      transformer: log(),
+    );
   }
   final GetUsersUseCase _getUsersUseCase;
 
@@ -41,13 +51,33 @@ class HomeBloc extends BaseBloc<HomeEvent, HomeState> {
     );
   }
 
+  FutureOr<void> _deleteRecordLine(DeleteRecordLine event, Emitter<HomeState> emit) async {
+    final result = state.records.where((e) => e.index != event.recordLine.index).toList();
+    emit(state.copyWith(
+      records: result,
+    ));
+  }
+
+  FutureOr<void> _updateRecordLine(UpdateRecordLine event, Emitter<HomeState> emit) async {
+    final result = state.records.map((e) {
+      if (e.index == event.recordLine.index) {
+        return event.recordLine;
+      }
+      return e;
+    }).toList();
+    
+    emit(state.copyWith(
+      records: result,
+    ));
+  }
+
   FutureOr<void> _addRecordLine(AddRecordLine event, Emitter<HomeState> emit) async {
     // print(event.recordLine);
     final line = event.recordLine.copyWith(
-      index: state.records.length,
+      index: state.records.last.index + 1,
     );
     emit(state.copyWith(
-      records: [...state.records,line],
+      records: [...state.records, line],
     ));
     // print(state.records.length);
   }
