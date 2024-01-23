@@ -53,6 +53,9 @@ class HomeBloc extends BaseBloc<HomeEvent, HomeState> {
 
   FutureOr<void> _deleteRecordLine(DeleteRecordLine event, Emitter<HomeState> emit) async {
     final result = state.records.where((e) => e.index != event.recordLine.index).toList();
+    for (var i = 0; i < result.length; i++) {
+      result[i] = result[i].copyWith(index: i);
+    }
     emit(state.copyWith(
       records: result,
     ));
@@ -65,7 +68,7 @@ class HomeBloc extends BaseBloc<HomeEvent, HomeState> {
       }
       return e;
     }).toList();
-    
+
     emit(state.copyWith(
       records: result,
     ));
@@ -74,7 +77,7 @@ class HomeBloc extends BaseBloc<HomeEvent, HomeState> {
   FutureOr<void> _addRecordLine(AddRecordLine event, Emitter<HomeState> emit) async {
     // print(event.recordLine);
     final line = event.recordLine.copyWith(
-      index: state.records.last.index + 1,
+      index: state.records.length == 0 ? 0: state.records.last.index + 1,
     );
     emit(state.copyWith(
       records: [...state.records, line],

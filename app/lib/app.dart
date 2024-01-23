@@ -15,6 +15,7 @@ export 'base/bloc/common/common_event.dart';
 export 'base/bloc/common/common_state.dart';
 export 'base/bloc/mixin/event_transformer_mixin.dart';
 export 'common_view/blur_border_container.dart';
+export 'common_view/border_container.dart';
 export 'common_view/common_app_bar.dart';
 export 'common_view/common_dialog_record_line.dart';
 export 'common_view/common_scaffold.dart';

@@ -89,16 +89,17 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                         horizontalMargin: 0,
                         columnSpacing: 0,
                         showCheckboxColumn: false,
+                        headingRowHeight: 70,
                         // dataRowMinHeight: 50,
                         dataRowMaxHeight: double.infinity, // For dynamic row content height.
                         border: TableBorder.all(color: AppColors.current.primaryColor.withOpacity(0.3), width: 2),
                         // columns: [{'', 2}, 'Nội dung', 'Tiền', ''].map((e) => HeaderDataColumn(e)).toList(),
                         //*columns
                         columns: [
-                          ['Nội dung', .6],
+                          ['(1)', .6],
                           [
-                            'Tổng: ' +
-                                NumberFormatUtils.formatNumber(
+                            // 'Tổng: \n' +
+                            NumberFormatUtils.formatNumber(
                                   state.records.fold(0, (num previousValue, element) => previousValue + element.sign * element.money).toInt(),
                                 ) +
                                 ' kđ',
@@ -107,6 +108,33 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                         ].map((e) => HeaderDataColumn(e, width)).toList(),
                         //*rows
                         rows: [
+                          //* Tổng Thu
+                          DataRow(
+                            color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                            cells: [
+                              DataCell(Center(child: Text("Tổng Thu", style: AppTextStyles.s14w600Primary()))),
+                              DataCell(Container(
+                                padding: EdgeInsets.all(Dimens.d16.responsive()),
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                    NumberFormatUtils.formatNumber(state.records.fold(0, (num previousValue, element) => previousValue + (element.sign == 1 ? element.money : 0)).toInt()) + ' kđ',
+                                    style: AppTextStyles.s14w600(color: Colors.green)),
+                              )),
+                            ],
+                          ),
+                          DataRow(
+                            color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                            cells: [
+                              DataCell(Center(child: Text("Tổng Chi", style: AppTextStyles.s14w600Primary()))),
+                              DataCell(Container(
+                                padding: EdgeInsets.all(Dimens.d16.responsive()),
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                    NumberFormatUtils.formatNumber(state.records.fold(0, (num previousValue, element) => previousValue + (element.sign == -1 ? element.money : 0)).toInt()) + ' kđ',
+                                    style: AppTextStyles.s14w600(color: Colors.red)),
+                              )),
+                            ],
+                          ),
                           ...state.records.map(
                             (item) => DataRow(
                               color: MaterialStateProperty.resolveWith<Color>((states) => item.index.isEven ? AppColors.current.primaryColor.withOpacity(0.1) : Colors.white),
@@ -201,7 +229,7 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                         context: context,
                         builder: (BuildContext context) => CommonDialogRecordLine(),
                       );
-                      // print((data as RecordLine));
+                      print((data as RecordLine));
                       if (data != null) {
                         bloc.add(AddRecordLine(recordLine: data));
                       }
@@ -211,8 +239,138 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
                   ),
                 ),
                 //* Chốt sổ
-                const Center(
-                  child: Text("It's rainy here"),
+                SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        //* Tiền bán xăng
+                        BorderContainer(
+                          // margin: EdgeInsets.symmetric(horizontal: Dimens.d20.responsive(), vertical: Dimens.d10.responsive()),
+                          // color: Colors.red,
+                          width: double.infinity,
+                          child: DataTable(
+                            // border: null,
+                            horizontalMargin: 0,
+                            columnSpacing: 0,
+                            showCheckboxColumn: false,
+                            // dataRowMinHeight: 50,
+                            dataRowMaxHeight: double.infinity, // For dynamic row content height.
+                            // border: TableBorder.all(color: AppColors.current.primaryColor.withOpacity(0.3), width: 2),
+                            decoration: BoxDecoration(
+                              // Đặt decoration cho dòng đầu tiên
+                              color: Colors.blue.withOpacity(0.05),
+                            ),
+                            columns: [
+                              ['(2)', .05],
+                              ['Xăng', .15],
+                              ['Dầu', .15],
+                            ].map((e) => HeaderDataColumn(e, width)).toList(),
+                            rows: [
+                              DataRow(
+                                color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                                cells: [
+                                  DataCell(BaseDataItem(text: 'Cuối (l)', style: AppTextStyles.s14w600Primary())),
+                                  DataCell(BaseDataItem(text: '200 123 123')),
+                                  DataCell(BaseDataItem(text: '200 123 123')),
+                                ],
+                              ),
+                              DataRow(
+                                color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                                cells: [
+                                  DataCell(BaseDataItem(text: 'Đầu (l)', style: AppTextStyles.s14w600Primary())),
+                                  DataCell(BaseDataItem(text: '200 123 123')),
+                                  DataCell(BaseDataItem(text: '200 123 123')),
+                                ],
+                              ),
+                              //generate line between row
+                              DataRow(
+                                color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                                cells: [
+                                  DataCell(BaseDataItem(text: 'Lệch (l)', style: AppTextStyles.s14w600Primary())),
+                                  DataCell(BaseDataItem(text: '123')),
+                                  DataCell(BaseDataItem(text: '123')),
+                                ],
+                              ),
+                              DataRow(
+                                color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                                cells: [
+                                  DataCell(BaseDataItem(text: 'Giá (đ)', style: AppTextStyles.s14w600Primary())),
+                                  DataCell(BaseDataItem(text: '17 123')),
+                                  DataCell(BaseDataItem(text: '23 123')),
+                                ],
+                              ),
+                              DataRow(
+                                color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                                cells: [
+                                  DataCell(BaseDataItem(text: 'Tiền (kđ)', style: AppTextStyles.s14w600Primary())),
+                                  DataCell(BaseDataItem(
+                                    text: '17 123',
+                                    style: AppTextStyles.s18w600(color: Colors.green),
+                                  )),
+                                  DataCell(BaseDataItem(
+                                    text: '17 123',
+                                    style: AppTextStyles.s18w600(color: Colors.orange),
+                                  )),
+                                ],
+                              ),
+                              DataRow(
+                                color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                                cells: [
+                                  DataCell(BaseDataItem(text: 'Tổng (kđ)', style: AppTextStyles.s14w600Primary())),
+                                  DataCell(Container(alignment: Alignment.centerRight, child: IntrinsicWidth(child: BorderContainer(child: BaseDataItem(text: '140 123'))))),
+                                  DataCell(Center(child: Icon(Icons.transit_enterexit))),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        BorderContainer(
+                          width: double.infinity,
+                          child: DataTable(
+                            border: TableBorder.all(color: AppColors.current.primaryColor.withOpacity(0.3), width: 2),
+                            horizontalMargin: 0,
+                            columnSpacing: 0,
+                            showCheckboxColumn: false,
+                            dataRowMaxHeight: double.infinity, // For dynamic row content height.
+                            columns: [
+                              ['', .3],
+                              ['', .3],
+                            ].map((e) => HeaderDataColumn(e, width)).toList(),
+                            rows: [
+                              DataRow(
+                                color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                                cells: [
+                                  DataCell(BaseDataItem(text: 'Ghi Chép (1)', style: AppTextStyles.s14w600Primary())),
+                                  DataCell(BaseDataItem(
+                                    text: '17 123',
+                                    style: AppTextStyles.s18w600(color: Colors.orange),
+                                  )),
+                                ],
+                              ),
+                                                            DataRow(
+                                color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                                cells: [
+                                  DataCell(BaseDataItem(text: 'Tiền Bán (2)', style: AppTextStyles.s14w600Primary())),
+                                  DataCell(BaseDataItem(
+                                    text: '17 123',
+                                    style: AppTextStyles.s18w600(color: Colors.orange),
+                                  )),
+                                ],
+                              ),
+                              DataRow(
+                                color: MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+                                cells: [
+                                  DataCell(BaseDataItem(text: '', style: AppTextStyles.s14w600Primary())),
+                                  DataCell(Container(alignment: Alignment.centerRight, child: IntrinsicWidth(child: BorderContainer(child: BaseDataItem(text: '140 123'))))),
+                                  // DataCell(Center(child: Icon(Icons.transit_enterexit))),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -225,6 +383,42 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
 //* header data column
   DataColumn HeaderDataColumn(List<dynamic> ob, width) => DataColumn(
           label: Expanded(
-        child: Container(width: width * ob[1], child: Text(ob[0], style: AppTextStyles.s14w600Primary(), textAlign: TextAlign.center)),
+        child: Container(
+          padding: EdgeInsets.all(Dimens.d16.responsive()),
+          width: width * ob[1],
+          child: Text(ob[0], style: AppTextStyles.s16w500Primary(), textAlign: TextAlign.right),
+        ),
       ));
+}
+
+class BaseDataItem extends StatefulWidget {
+  const BaseDataItem({
+    required this.text,
+    this.alignment = Alignment.centerRight,
+    this.style,
+    super.key,
+  });
+
+  final String text;
+  final Alignment alignment;
+  final TextStyle? style;
+
+  @override
+  State<BaseDataItem> createState() => _BaseDataItemState();
+}
+
+class _BaseDataItemState extends State<BaseDataItem> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        // padding: EdgeInsets.all(Dimens.d8.responsive()),
+        alignment: widget.alignment,
+        child: Text(
+          widget.text,
+          style: widget.style ?? AppTextStyles.s18w600Primary(),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+          textAlign: TextAlign.right,
+        ));
+  }
 }
